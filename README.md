@@ -168,7 +168,7 @@ print("Generated text:", generated_text)
 - 提交 pull request 改進緩存機制、內存優化或新增採樣策略
 - 提出並討論早停策略和生成質量指標的改進方案
 
-請參閱 [CONTRIBUTING.md](CONTRIBUTING.md) 以了解詳細指南。
+請參閱 [contributing-doc.md](contributing-doc.md) 以了解詳細指南。
 
 ## 授權
 
