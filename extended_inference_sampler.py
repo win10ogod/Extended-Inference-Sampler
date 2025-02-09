@@ -1,44 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Extended Inference Sampler (EIS) – 推理时间扩展采样器
+擴展推理取樣器 (EIS) – 推理時間擴展取樣器
 ====================================================
 
-本模块实现了一种推理时扩展采样器，核心思想为：
-    对于当前生成状态 x，
-    1. 首先计算下一个 token 的概率分布，从中取 top_k 候选 token（初始对数概率 log p(c|x)）。
-    2. 对于每个候选 token c，通过 rollout 生成后续 L 个 token（前瞻步数 lookahead_steps），
-       计算累计折扣对数概率：
-           S_rollout(c) = Σ_{t=1}^L [γ^t * log p(c_t | x, c, c_{1:t-1})]
-    3. 扩展得分 S_ext(c) = log p(c|x) + S_rollout(c)
-    4. 根据扩展得分选择最佳候选 token 更新生成序列。
+本模組實現的推理擴展器，核心思想為：
+ 對於目前生成狀態x，
+ 1. 先計算下一個token的機率分佈，從中取top_k個候選token（初始對數機率log p(c|x)）。
+ 2. 對於每個候選token c，透過rollout產生後續 L 個token（前瞻步數lookahead_steps），
+ 計算折扣對數機率：
+ S_rollout(c) = Σ_{t=1}^L [γ^t * log p(c_t | x, c, c_{1:t-1})]
+ 3. 擴展分數 S_ext(c) = log p(c|x) + S_rollout(c)
+ 4. 根據擴充取得選擇候選令牌更新產生序列。
 
-【优化内容】
-1. **缓存优化**  
-   - 若 model_kwargs 包含 past_key_values（模型缓存），在主生成循环中将其更新，避免重复计算。
-2. **采样策略扩展**  
-   - 添加 temperature 参数（默认1.0）以调节温度。
-   - 添加 top_p（nucleus采样）参数（默认1.0表示不开启）。
-3. **早停机制**  
-   - 当所有样本均生成 EOS 时提前退出生成循环。
-4. **生成质量指标**  
-   - 在候选 rollout 时记录扩展得分，并在生成结束后（或调试模式下）统计平均扩展得分。
+【優化內容】
+1. **資料庫優化**
+ - 若model_kwargs包含past_key_values（模型快取），在主產生迴圈中更新，避免重複計算。
+2. **採樣策略擴展**
+ - 新增溫度參數（預設1.0）以調節溫度。
+ - 新增top_p（核採樣）參數（預設1.0表示不開啟）。
+3. **早停機制**
+ - 當所有樣本均產生 EOS 時提前退出生成循環。
+4. **產生品質指標**
+ - 在候選推出時記錄擴展得分，並在生成結束後（或調試模式下）統計平均擴展得分。
 
-使用示例：
-    sampler = ExtendedInferenceSampler(model, tokenizer,
-                                         lookahead_steps=3,
-                                         discount_factor=0.9,
-                                         top_k=5,
-                                         temperature=0.8,
-                                         top_p=0.95,
-                                         use_cache=True,
-                                         debug=True)
-    output_ids = sampler.generate(input_ids, generation_config=gen_config, **model_kwargs)
+使用範例：
+ 採樣器 = ExtendedInferenceSampler（模型，標記器，
+ 前瞻步驟=3，
+ 折扣係數=0.9，
+ top_k=5，
+ 溫度=0.8，
+ 最高p=0.95，
+ use_cache=True，
+ 調試=True）
+ output_ids = sampler.generate（input_ids，generation_config=gen_config，**model_kwargs）
 
-请根据需要进一步扩展缓存更新部分（本代码中 candidate rollout 依然采用 deepcopy 以确保独立计算）。
+請進一步擴展快取更新部分（本程式碼中候選rollout依然採用deepcopy來解決獨立計算）。
 
-Author: [Your Name]
-Date: [发布日期]
+作者：win100
+日期：2025/02/09
 """
 
 import copy
