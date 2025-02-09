@@ -1,4 +1,3 @@
-```
 # Extended Inference Sampler (EIS)
 
 Extended Inference Sampler (EIS) 是一個基於推理時擴展計算（Extended Inference）的採樣器，專門用於自回歸文本生成任務。它在生成每個 token 之前，會從模型輸出中選取 top‑K 候選 token，並對每個候選 token 執行一定步數的前瞻 rollout（lookahead rollout），計算出延伸得分，從而使模型在“花更多推理時間”後再做出選擇。此設計靈感來自於 OpenAI o1/o3‑mini 系列模型以及相關推理時計算（inference‑time compute）的研究成果。
@@ -174,7 +173,4 @@ print("Generated text:", generated_text)
 ## 授權
 
 本項目基於 MIT 許可證，詳情請參閱 [LICENSE](LICENSE) 文件。
-
----
 希望本項目能夠幫助研究者和開發者在推理時計算擴展中獲得更好的生成效果，並期待社區的貢獻與交流！
-```
